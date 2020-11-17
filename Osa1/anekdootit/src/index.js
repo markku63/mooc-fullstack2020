@@ -12,6 +12,7 @@ const App = (props) => {
   return (
     <div>
       <p>{props.anecdotes[selected]}</p>
+      <button>vote</button>
       <button onClick={() => setSelected(getRandomInt(maxAnecdote))}>next anecdote</button>
     </div>
   )
