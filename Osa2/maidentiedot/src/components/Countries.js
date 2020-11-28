@@ -1,8 +1,11 @@
 import React from 'react'
 
-const Country = ({country}) => {
+const Country = (props) => {
     return (
-        <li>{country.name}</li>
+        <li>
+            {props.country.name}
+            <button onClick={() => props.setFilterString(props.country.name)}>Show</button>
+        </li>
     )
 }
 
@@ -28,7 +31,6 @@ const CountryDetail = ({country}) => {
 const Countries = (props) => {
     const countries = props.countries
         .filter(country => country.name.toLowerCase().includes(props.filterString.toLowerCase()))
-
     if (countries.length > 10) {
         return (
             <div>
@@ -39,13 +41,15 @@ const Countries = (props) => {
     } else if (countries.length > 1) {
         return (
             <ul style={{ 'listStyleType': 'none' }} >
-                {countries.map(country => <Country key={country.alpha3Code} country={country} /> )  }
+                {countries.map(country => <Country key={country.alpha3Code} country={country} setFilterString={props.setFilterString} /> )  }
             </ul>
         )
-    } else {
+    } else if (countries.length === 1) {
         return (
             <CountryDetail country={countries[0]} />
         )
+    } else {
+        return null
     }
 }
 
