@@ -1,4 +1,5 @@
 import React from 'react'
+import CountryDetail from './CountryDetail'
 
 const Country = (props) => {
     return (
@@ -6,25 +7,6 @@ const Country = (props) => {
             {props.country.name}
             <button onClick={() => props.setFilterString(props.country.name)}>Show</button>
         </li>
-    )
-}
-
-const CountryDetail = ({country}) => {
-    return (
-        <div>
-            <h1>{country.name}</h1>
-            <p>
-                capital {country.capital}<br />
-                population {country.population}
-            </p>
-            <h2>languages</h2>
-            <ul>
-    {country.languages.map(language => <li key={language.iso639_2}>{language.name}</li>)}
-            </ul>
-            <p>
-                <img src={country.flag} alt="Flag of {country.name}" height="200" />
-            </p>
-        </div>
     )
 }
 
