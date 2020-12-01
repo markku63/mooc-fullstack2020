@@ -19,16 +19,6 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": 4
-    },
-    {
-      "name": "Guido van Rossum",
-      "number": "+31-234-56768",
-      "id": 5
-    },
-    {
-      "name": "Linus Torvalds",
-      "number": "+1-555-666-7777",
-      "id": 6
     }
   ]
 }
