@@ -25,8 +25,16 @@ const App = () => {
       name: newName,
       number: newNumber,
     }
-    if (persons.findIndex(element => element.name === newName) !== -1) {
-      window.alert(`${newName} is already added to phonebook`)
+    let person = undefined
+    // eslint-disable-next-line no-cond-assign
+    if ((person = persons.find(element => element.name === newName)) !== undefined) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`)) {
+        personService
+          .update(person.id, personObject)
+          .then((returnedPerson) => {
+            setPersons(persons.map(p => p.id === person.id ? returnedPerson : p))
+          })
+      }
     } else {
       personService
         .create(personObject)

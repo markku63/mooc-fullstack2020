@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "040-123456",
+      "number": "123 456 789",
       "id": 1
     },
     {
@@ -16,8 +16,8 @@
       "id": 3
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
+      "name": "Aimo Testi",
+      "number": "666-777-8888",
       "id": 4
     }
   ]
