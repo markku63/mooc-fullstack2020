@@ -3,13 +3,14 @@ import personService from './services/persons'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
-
+import Notification from './components/Notification'
 
 const App = () => {
   const [ persons, setPersons] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filterString, setFilterString ] = useState('')
+  const [ message, setMessage ] = useState(null)
 
   useEffect(() => {
     personService
@@ -33,26 +34,35 @@ const App = () => {
           .update(person.id, personObject)
           .then((returnedPerson) => {
             setPersons(persons.map(p => p.id === person.id ? returnedPerson : p))
+            setMessage(`Changed ${newName}'s phone number to ${newNumber}`)
+            setTimeout(() => {setMessage(null)}, 5000)
+            setNewName('')
+            setNewNumber('')  
           })
       }
     } else {
       personService
         .create(personObject)
-        .then(returnedNote => {
-          setPersons(persons.concat(returnedNote))
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setMessage(`Added ${returnedPerson.name}`)
+          setTimeout(() => {setMessage(null)}, 5000)
         })
       
     }
   }
 
   const deletePerson = (id) => {
-    if (window.confirm(`Delete ${persons.find(p => p.id === id).name}?`)) {
+    const name = persons.find(p => p.id === id).name
+    if (window.confirm(`Delete ${name}?`)) {
       personService
         .remove(id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== id))
+          setMessage(`Deleted ${name}`)
+          setTimeout(() => {setMessage(null)}, 5000)
         })
     }
   }
@@ -72,6 +82,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filterString={filterString} handleFilterChange={handleFilterChange} />
       <h3>add a new</h3>
       <PersonForm addPerson={addPerson} newName={newName} handlePersonChange={handlePersonChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
