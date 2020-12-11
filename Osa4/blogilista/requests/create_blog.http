@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "The Online Photographer",
+  "author": "Mike Johnston",
+  "url": "https://theonlinephotographer.typepad.com/the_online_photographer/blog_index.html",
+  "likes": 0
+}
