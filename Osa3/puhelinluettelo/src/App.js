@@ -7,13 +7,13 @@ import Notification from './components/Notification'
 import ErrorMessage from './components/ErrorMessage'
 
 const App = () => {
-  const [ persons, setPersons] = useState([]) 
+  const [ persons, setPersons] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filterString, setFilterString ] = useState('')
   const [ message, setMessage ] = useState(null)
   const [ errorMessage, setErrorMessage ] = useState(null)
- 
+
   useEffect(() => {
     personService
       .getAll()
@@ -39,9 +39,9 @@ const App = () => {
             setMessage(`Changed ${newName}'s phone number to ${newNumber}`)
             setTimeout(() => {setMessage(null)}, 5000)
             setNewName('')
-            setNewNumber('')  
+            setNewNumber('')
           })
-          .catch(error => {
+          .catch(() => {
             setErrorMessage(`Information of ${newName} has already been removed from server`)
             setTimeout(() => {setErrorMessage(null)}, 5000)
             setPersons(persons.filter(p => p.id !== person.id))
