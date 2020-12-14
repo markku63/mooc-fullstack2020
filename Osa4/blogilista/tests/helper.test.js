@@ -128,3 +128,19 @@ describe('Favorite Blog', () => {
       })
   })
 })
+
+describe('Most Blogs', () => {
+  test('of an empty list does not exist', () => {
+    expect(listHelper.mostBlogs([])).toBeNull()
+  })
+
+  test('of a list with one blog', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', blogs: 1 })
+  })
+
+  test('of a list with many blogs', () => {
+    const result = listHelper.mostBlogs(listWithManyBlogs)
+    expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
+  })
+})
