@@ -15,7 +15,14 @@ const totalLikes = (blogs) => {
 
 const favoriteBlog = (blogs) => {
   if (!blogs || blogs.length === 0) {
-    return undefined
+    return null
+  } else {
+    const favorite = blogs.sort((a, b) => b.likes - a.likes)[0]
+    return {
+      title: favorite.title,
+      author: favorite.author,
+      likes: favorite.likes
+    }
   }
 }
 
