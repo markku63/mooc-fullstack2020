@@ -13,7 +13,14 @@ const totalLikes = (blogs) => {
   }
 }
 
+const favoriteBlog = (blogs) => {
+  if (!blogs || blogs.length === 0) {
+    return undefined
+  }
+}
+
 module.exports = {
   dummy,
-  totalLikes
+  totalLikes,
+  favoriteBlog
 }
