@@ -19,6 +19,12 @@ test('all notes are returned and they are in JSON', async () => {
   expect(response.body.length).toBe(helper.initialBlogs.length)
 })
 
+test('notes have an id field', async () => {
+  const response = await api.get('/api/blogs')
+
+  expect(response.body[0].id).toBeDefined()
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
