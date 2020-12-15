@@ -11,7 +11,7 @@ beforeEach(async () => {
   await Blog.insertMany(helper.initialBlogs)
 })
 
-test('all notes are returned and they are in JSON', async () => {
+test('all blogs are returned and they are in JSON', async () => {
   const response = await api.get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
@@ -19,7 +19,7 @@ test('all notes are returned and they are in JSON', async () => {
   expect(response.body.length).toBe(helper.initialBlogs.length)
 })
 
-test('notes have an id field', async () => {
+test('blogs have an id field', async () => {
   const response = await api.get('/api/blogs')
 
   expect(response.body[0].id).toBeDefined()
@@ -29,7 +29,8 @@ test('a blog can be added', async () => {
   const newBlog = {
     title: 'A test blog',
     author: 'Abe Test',
-    url: 'http://www.example.com/testing'
+    url: 'http://www.example.com/testing',
+    likes: 42
   }
 
   await api
@@ -42,7 +43,9 @@ test('a blog can be added', async () => {
   expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
 
   const titles = blogsAtEnd.map(n => n.title)
+  const authors = blogsAtEnd.map(n => n.author)
   expect(titles).toContain('A test blog')
+  expect(authors).toContain('Abe Test')
 })
 
 test('likes defaults to zero', async () => {
@@ -87,6 +90,19 @@ test('deletion of an existing note', async () => {
   const titles = blogsAtEnd.map(b => b.title)
 
   expect(titles).not.toContain(blogToDelete.title)
+})
+
+test('changing the likes of an existing note', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToModify = blogsAtStart[0]
+  const likes = { likes: blogToModify.likes + 1 }
+
+  const result = await api
+    .put(`/api/blogs/${blogToModify.id}`)
+    .send(likes)
+    .expect(200)
+
+  expect(result.body.likes).toBe(blogToModify.likes + 1)
 })
 
 afterAll(() => {
