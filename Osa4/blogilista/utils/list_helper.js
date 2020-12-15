@@ -43,6 +43,15 @@ const mostBlogs = (blogs) => {
 const mostLikes = (blogs) => {
   if (!blogs || blogs.length === 0) {
     return null
+  } else {
+    const totalLikes = Object.entries(blogs.reduce((total, next) => {
+      total[next.author] = (total[next.author] || 0) + next.likes
+      return total
+    }, {})).sort((a, b) => b[1] - a[1])
+    return {
+      author: totalLikes[0][0],
+      likes: totalLikes[0][1]
+    }
   }
 }
 
