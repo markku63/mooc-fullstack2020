@@ -45,6 +45,22 @@ test('a blog can be added', async () => {
   expect(titles).toContain('A test blog')
 })
 
+test('likes defaults to zero', async () => {
+  const newBlog = {
+    title: 'A test blog',
+    author: 'Abe Test',
+    url: 'http://www.example.com/testing'
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  expect(response.body.likes).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
