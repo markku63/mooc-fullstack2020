@@ -6,20 +6,17 @@ const api = supertest(app)
 
 const User = require('../models/user')
 
-describe('When there is initially one user at db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
-    const user = new User({
-      username: 'root', password: 'qwerty'
-    })
-    await user.save()
-  })
+beforeEach(async () => {
+  await User.deleteMany({})
+  await User.insertMany(helper.initialUsers)
+})
 
+describe('When there is initially some users at db', () => {
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
     const newUser = {
-      username: 'mluukkai',
-      name: 'Matti Luukkainen',
+      username: 'root',
+      name: 'superuser',
       password: 'salainen',
     }
 
@@ -38,7 +35,7 @@ describe('When there is initially one user at db', () => {
 
   test('creation of a duplicated user fails with proper status and message', async () => {
     const newUser = {
-      username: 'root',
+      username: 'mluukkai',
       password: 'password1'
     }
 
