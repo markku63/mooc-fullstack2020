@@ -7,105 +7,116 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+let auth = {}
+
 beforeEach(async () => {
   await Blog.deleteMany()
   await User.deleteMany()
   await User.insertMany(helper.initialUsers)
   await Blog.insertMany(helper.initialBlogs)
+  api
+    .post('/api/login')
+    .send({ username: 'mluukkai', password: 'secret' })
+    .end((err, res) => {
+      auth.token = res.body.token
+    })
 })
 
-test('all blogs are returned and they are in JSON', async () => {
-  const response = await api.get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+describe('When there are some initial users and blogs', () => {
+  test('all blogs are returned and they are in JSON', async () => {
+    const response = await api.get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-  expect(response.body.length).toBe(helper.initialBlogs.length)
-})
+    expect(response.body.length).toBe(helper.initialBlogs.length)
+  })
 
-test('blogs have an id field', async () => {
-  const response = await api.get('/api/blogs')
+  test('blogs have an id field', async () => {
+    const response = await api.get('/api/blogs')
 
-  expect(response.body[0].id).toBeDefined()
-})
+    expect(response.body[0].id).toBeDefined()
+  })
 
-test('a blog can be added', async () => {
-  const newBlog = {
-    title: 'A test blog',
-    author: 'Abe Test',
-    url: 'http://www.example.com/testing',
-    likes: 42
-  }
+  test('a blog can be added', async () => {
+    const newBlog = {
+      title: 'A test blog',
+      author: 'Abe Test',
+      url: 'http://www.example.com/testing',
+      likes: 42
+    }
+    console.log('token = ', auth.token)
+    await api
+      .post('/api/blogs')
+      .auth(auth.token, { type: 'bearer' })
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
 
-  const blogsAtEnd = await helper.blogsInDb()
-  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+    const titles = blogsAtEnd.map(n => n.title)
+    const authors = blogsAtEnd.map(n => n.author)
+    expect(titles).toContain('A test blog')
+    expect(authors).toContain('Abe Test')
+  })
 
-  const titles = blogsAtEnd.map(n => n.title)
-  const authors = blogsAtEnd.map(n => n.author)
-  expect(titles).toContain('A test blog')
-  expect(authors).toContain('Abe Test')
-})
+  test('likes defaults to zero', async () => {
+    const newBlog = {
+      title: 'A test blog',
+      author: 'Abe Test',
+      url: 'http://www.example.com/testing'
+    }
 
-test('likes defaults to zero', async () => {
-  const newBlog = {
-    title: 'A test blog',
-    author: 'Abe Test',
-    url: 'http://www.example.com/testing'
-  }
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-  const response = await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+    expect(response.body.likes).toBe(0)
+  })
 
-  expect(response.body.likes).toBe(0)
-})
+  test('blog title and URL are required', async () => {
+    const badBlog = {
+      author: 'John Doe'
+    }
 
-test('blog title and URL are required', async () => {
-  const badBlog = {
-    author: 'John Doe'
-  }
+    await api
+      .post('/api/blogs')
+      .send(badBlog)
+      .expect(400)
+  })
 
-  await api
-    .post('/api/blogs')
-    .send(badBlog)
-    .expect(400)
-})
+  test('deletion of an existing note', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
 
-test('deletion of an existing note', async () => {
-  const blogsAtStart = await helper.blogsInDb()
-  const blogToDelete = blogsAtStart[0]
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
 
-  await api
-    .delete(`/api/blogs/${blogToDelete.id}`)
-    .expect(204)
+    const blogsAtEnd = await helper.blogsInDb()
 
-  const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd.length).toBe(blogsAtStart.length - 1)
 
-  expect(blogsAtEnd.length).toBe(blogsAtStart.length - 1)
+    const titles = blogsAtEnd.map(b => b.title)
 
-  const titles = blogsAtEnd.map(b => b.title)
+    expect(titles).not.toContain(blogToDelete.title)
+  })
 
-  expect(titles).not.toContain(blogToDelete.title)
-})
+  test('changing the likes of an existing note', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToModify = blogsAtStart[0]
+    const likes = { likes: blogToModify.likes + 1 }
 
-test('changing the likes of an existing note', async () => {
-  const blogsAtStart = await helper.blogsInDb()
-  const blogToModify = blogsAtStart[0]
-  const likes = { likes: blogToModify.likes + 1 }
+    const result = await api
+      .put(`/api/blogs/${blogToModify.id}`)
+      .send(likes)
+      .expect(200)
 
-  const result = await api
-    .put(`/api/blogs/${blogToModify.id}`)
-    .send(likes)
-    .expect(200)
-
-  expect(result.body.likes).toBe(blogToModify.likes + 1)
+    expect(result.body.likes).toBe(blogToModify.likes + 1)
+  })
 })
 
 afterAll(() => {
