@@ -7,19 +7,14 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-let auth = {}
+// token for user 'mluukkai', update the token if environment variable SECRET changes
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1ZmUwNWZkYTlmYTgxZTViMWE1YmI4NmYiLCJpYXQiOjE2MDk3NjU4MzF9.ZEdQ0ik4PKhTYDZlk8Vg5HzB7t0tN4qFlQob-LALU8A'
 
 beforeEach(async () => {
   await Blog.deleteMany()
   await User.deleteMany()
   await User.insertMany(helper.initialUsers)
   await Blog.insertMany(helper.initialBlogs)
-  api
-    .post('/api/login')
-    .send({ username: 'mluukkai', password: 'secret' })
-    .end((err, res) => {
-      auth.token = res.body.token
-    })
 })
 
 describe('When there are some initial users and blogs', () => {
@@ -44,10 +39,10 @@ describe('When there are some initial users and blogs', () => {
       url: 'http://www.example.com/testing',
       likes: 42
     }
-    console.log('token = ', auth.token)
+
     await api
       .post('/api/blogs')
-      .auth(auth.token, { type: 'bearer' })
+      .set({ Authorization: 'bearer ' + token })
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -70,6 +65,7 @@ describe('When there are some initial users and blogs', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set({ Authorization: 'bearer ' + token })
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -84,16 +80,18 @@ describe('When there are some initial users and blogs', () => {
 
     await api
       .post('/api/blogs')
+      .set({ Authorization: 'bearer ' + token })
       .send(badBlog)
       .expect(400)
   })
 
   test('deletion of an existing note', async () => {
     const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+    const blogToDelete = blogsAtStart.find(e => e.id === '5a422bc61b54a676234d17fc')
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: 'bearer ' + token })
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
