@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +12,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -23,6 +26,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -41,7 +45,12 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log('Incorrect username or password!')
+      setMessageType('error')
+      setMessage('wrong username or password')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageType('')
+      }, 5000)
     }
   }
 
@@ -61,11 +70,18 @@ const App = () => {
       url: url
     }
 
-    const returnedBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(returnedBlog))
-    setAuthor('')
-    setTitle('')
-    setUrl('')
+    try {
+      const returnedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(returnedBlog))
+      setAuthor('')
+      setTitle('')
+      setUrl('')
+      setMessageType('notification')
+    } catch (error) {
+      setMessageType('error')
+      setMessage('error while adding blog')
+    }
+
   }
 
   const loginForm = () => (
@@ -134,6 +150,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        <Notification message={message} type={messageType} />
         {loginForm()}
       </div>
     )
@@ -141,6 +158,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={message} type={messageType} />
       <p>
         {user.name} logged in
         <button onClick={handleLogout}>
