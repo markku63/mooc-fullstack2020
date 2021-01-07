@@ -11,9 +11,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState('')
 
@@ -34,6 +31,15 @@ const App = () => {
     }
   }, [])
 
+  const showNotification = (type, text) => {
+    setMessageType(type)
+    setMessage(text)
+    setTimeout(() => {
+      setMessage(null)
+      setMessageType('')
+    }, 5000)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -49,12 +55,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setMessageType('error')
-      setMessage('wrong username or password')
-      setTimeout(() => {
-        setMessage(null)
-        setMessageType('')
-      }, 5000)
+      showNotification('error', 'wrong username or password')
     }
   }
 
@@ -66,34 +67,14 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url
-    }
-
+  const addBlog = async (blogObject) => {
     try {
       const returnedBlog = await blogService.create(blogObject)
       blogFormRef.current.toggleVisibility()
       setBlogs(blogs.concat(returnedBlog))
-      setMessageType('notification')
-      setMessage(`a new blog ${title} by ${author} added`)
-      setTimeout(() => {
-        setMessage(null)
-        setMessageType('')
-      }, 5000)
-      setAuthor('')
-      setTitle('')
-      setUrl('')
+      showNotification('notification', `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
     } catch (error) {
-      setMessageType('error')
-      setMessage('error while adding blog')
-      setTimeout(() => {
-        setMessage(null)
-        setMessageType('')
-      }, 5000)
+      showNotification('error', 'error while adding blog')
     }
 
   }
@@ -127,13 +108,7 @@ const App = () => {
   const blogForm = () => (
     <Togglable buttonLabel='new note' ref={blogFormRef}>
       <BlogForm
-        title={title}
-        author={author}
-        url={url}
         addBlog={addBlog}
-        handleTitleChange={({ target }) => setTitle(target.value)}
-        handleAuthorChange={({ target }) => setAuthor(target.value)}
-        handleUrlChange={({ target }) => setUrl(target.value)}
       />
     </Togglable>
   )
