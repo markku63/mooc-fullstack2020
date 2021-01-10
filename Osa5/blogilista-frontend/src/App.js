@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
     )
   }, [])
 
@@ -71,7 +71,7 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(blogObject)
       blogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(returnedBlog))
+      setBlogs(blogs.concat(returnedBlog).sort((a, b) => b.likes - a.likes))
       showNotification('notification', `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
     } catch (error) {
       showNotification('error', 'error while adding blog')

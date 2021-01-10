@@ -16,7 +16,8 @@ module.exports = {
     'sourceType': 'module'
   },
   'plugins': [
-    'react'
+    'react',
+    'react-hooks'
   ],
   'settings': {
     'react': {
@@ -50,5 +51,7 @@ module.exports = {
     ],
     'no-console': 0,
     'react/prop-types': 0,
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn'
   }
 }
