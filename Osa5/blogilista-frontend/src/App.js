@@ -91,6 +91,20 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blogObject) => {
+    try {
+      if (window.confirm(`Remove blog ${blogObject.title} by ${blogObject.author}?`)) {
+        let newBlogs = [...blogs]
+        await blogService.remove(blogObject)
+        const loc = newBlogs.findIndex((element) => element.id === blogObject.id)
+        newBlogs.splice(loc, 1)
+        setBlogs(newBlogs.sort((a, b) => b.likes - a.likes))
+      }
+    } catch (error) {
+      showNotification('error', 'error while deleting blog')
+    }
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -147,7 +161,7 @@ const App = () => {
       {blogForm()}
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} loggedUser={user.username} deleteBlog={deleteBlog} />
       )}
 
     </div>
