@@ -79,6 +79,18 @@ const App = () => {
 
   }
 
+  const updateBlog = async (blogObject) => {
+    try {
+      let newBlogs = [...blogs]
+      const returnedBlog = await blogService.update(blogObject)
+      const loc = newBlogs.findIndex((element) => element.id === blogObject.id)
+      newBlogs[loc] = returnedBlog
+      setBlogs(newBlogs.sort((a, b) => b.likes - a.likes))
+    } catch (error) {
+      showNotification('error', 'error while updating blog')
+    }
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -135,7 +147,7 @@ const App = () => {
       {blogForm()}
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
 
     </div>
