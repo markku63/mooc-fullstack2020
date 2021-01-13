@@ -35,4 +35,23 @@ describe('Blog app', function() {
       cy.get('html').should('not.contain', 'Jane Blogger logged in')
     })
   })
+
+  describe.only('When logged in', function() {
+    beforeEach(function() {
+      cy.login({ username: 'jblogger', password: 'password' })
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('new note').click()
+      cy.get('#title').type('React patterns')
+      cy.get('#author').type('Michael Chan')
+      cy.get('#url').type('https://reactpatterns.com/')
+      cy.get('#create-button').click()
+      cy.get('.notification')
+        .should('contain', 'a new blog React patterns by Michael Chan added')
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
+      cy.get('.blog')
+        .should('contain', 'React patterns Michael Chan')
+    })
+  })
 })
