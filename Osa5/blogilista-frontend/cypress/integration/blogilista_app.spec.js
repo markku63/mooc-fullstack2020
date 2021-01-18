@@ -36,7 +36,7 @@ describe('Blog app', function() {
     })
   })
 
-  describe.only('When logged in', function() {
+  describe('When logged in', function() {
     beforeEach(function() {
       cy.login({ username: 'jblogger', password: 'password' })
     })
@@ -60,21 +60,34 @@ describe('Blog app', function() {
         .and('contain', `${blogUrl}`)
         .and('contain', 'likes 0')
     })
+  })
 
-    it.only('A blog can be liked', function() {
+  describe.only('When logged in and a blog exists', function() {
+    beforeEach(function() {
+      const title = 'React patterns'
+      const author = 'Michael Chan'
+      const blogUrl = 'https://reactpatterns.com/'
+
+      cy.login({ username: 'jblogger', password: 'password' })
       cy.contains('new note').click()
-      cy.get('#title').type('React patterns')
-      cy.get('#author').type('Michael Chan')
-      cy.get('#url').type('https://reactpatterns.com/')
+      cy.get('#title').type(title)
+      cy.get('#author').type(author)
+      cy.get('#url').type(blogUrl)
       cy.get('#create-button').click()
       cy.get('#view-button').click()
+    })
 
+    it('A blog can be liked', function() {
       cy.get('#like-button').click()
       cy.get('.blog')
         .should('contain', 'likes 1')
       cy.get('#like-button').click()
       cy.get('.blog')
         .should('contain', 'likes 2')
+    })
+
+    it('A blog can be deleted', function() {
+      cy.get('#delete-button').click()
     })
   })
 })

@@ -13,7 +13,7 @@ const Blog = ({ blog, updateBlog, loggedUser, deleteBlog }) => {
   }
 
   const showWhenVisible = { display: visible ? '' : 'none' }
-  const showWhenVisibleAndLogged = { display: visible && loggedUser === blog.user.username ? '' : 'none' }
+  const showWhenVisibleAndLogged = { display: visible && loggedUser.username === blog.user.username ? '' : 'none' }
 
   const handleVisibility = (event) => {
     event.preventDefault()
@@ -51,7 +51,7 @@ const Blog = ({ blog, updateBlog, loggedUser, deleteBlog }) => {
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   updateBlog: PropTypes.func.isRequired,
-  loggedUser: PropTypes.string.isRequired,
+  loggedUser: PropTypes.object.isRequired,
   deleteBlog: PropTypes.func.isRequired
 }
 

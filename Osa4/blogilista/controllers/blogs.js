@@ -34,6 +34,8 @@ blogsRouter.post('/', async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
 
+  await savedBlog.populate('user', { username: 1, name: 1 }).execPopulate()
+
   response.json(savedBlog.toJSON())
 })
 
@@ -62,8 +64,12 @@ blogsRouter.put('/:id', async (request, response) => {
   const blog = {
     likes: body.likes
   }
-
+  console.log('id:', request.params.id, 'blog:', blog)
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+  if ( !updatedBlog ) {
+    return response.status(404).json({ error: 'no such blog' })
+  }
+  await updatedBlog.populate('user', { username: 1, name: 1 }).execPopulate()
   response.json(updatedBlog.toJSON())
 })
 

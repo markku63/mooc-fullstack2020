@@ -72,6 +72,7 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject)
       blogFormRef.current.toggleVisibility()
       setBlogs(blogs.concat(returnedBlog).sort((a, b) => b.likes - a.likes))
+      console.log('Added blog:', returnedBlog)
       showNotification('notification', `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
     } catch (error) {
       showNotification('error', 'error while adding blog')
@@ -83,6 +84,7 @@ const App = () => {
     try {
       let newBlogs = [...blogs]
       const returnedBlog = await blogService.update(blogObject)
+      console.log('Updated blog: ', returnedBlog)
       const loc = newBlogs.findIndex((element) => element.id === blogObject.id)
       newBlogs[loc] = returnedBlog
       setBlogs(newBlogs.sort((a, b) => b.likes - a.likes))
@@ -161,7 +163,7 @@ const App = () => {
       {blogForm()}
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} loggedUser={user.username} deleteBlog={deleteBlog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} loggedUser={user} deleteBlog={deleteBlog} />
       )}
 
     </div>
