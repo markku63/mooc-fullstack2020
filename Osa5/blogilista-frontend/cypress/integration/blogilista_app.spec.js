@@ -62,7 +62,7 @@ describe('Blog app', function() {
     })
   })
 
-  describe.only('When logged in and a blog exists', function() {
+  describe('When logged in and a blog exists', function() {
     beforeEach(function() {
       const title = 'React patterns'
       const author = 'Michael Chan'

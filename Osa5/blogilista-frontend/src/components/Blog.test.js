@@ -17,7 +17,7 @@ describe('<Blog />', () => {
 
   test('renders title and author but not URL or likes', () => {
     const component = render(
-      <Blog blog={blog} loggedUser='' deleteBlog={() => {}} updateBlog={() => {}} />
+      <Blog blog={blog} loggedUser={{ username: 'nobody' }} deleteBlog={() => {}} updateBlog={() => {}} />
     )
     expect(component.container).toHaveTextContent('Blogging considered harmful')
     expect(component.container).toHaveTextContent('John Doe')
@@ -30,7 +30,7 @@ describe('<Blog />', () => {
 
   test('makes details visible when button is clicked', () => {
     const component = render(
-      <Blog blog={blog} loggedUser='' deleteBlog={() => {}} updateBlog={() => {}} />
+      <Blog blog={blog} loggedUser={{ username: 'nobody' }} deleteBlog={() => {}} updateBlog={() => {}} />
     )
     const button = component.getByText('view')
     fireEvent.click(button)
@@ -43,7 +43,7 @@ describe('<Blog />', () => {
   test('registers each press of like-button', () => {
     const mockHandler = jest.fn()
     const component = render(
-      <Blog blog={blog} loggedUser='' deleteBlog={() => {}} updateBlog={mockHandler} />
+      <Blog blog={blog} loggedUser={{ username: 'nobody' }} deleteBlog={() => {}} updateBlog={mockHandler} />
     )
     const button = component.getByText('like')
     fireEvent.click(button)
