@@ -4,15 +4,15 @@ const initialState = {
 
 const notificationReducer = (state = initialState, action) => {
   switch(action.type) {
-    case 'VOTE':
+    case 'VOTE_NOTIFICATION':
       const voteMessage = `you voted '${action.data.content}'`
       const voteState = { text: voteMessage }
       return voteState
-    case 'NEW':
+    case 'NEW_NOTIFICATION':
       const newMessage = `you added new anecdote '${action.data}'`
       const newState = { text: newMessage }
       return newState
-    case 'RESET':
+    case 'RESET_NOTIFICATION':
       const clearState = { text: null }
       return clearState
     default:
@@ -22,21 +22,21 @@ const notificationReducer = (state = initialState, action) => {
 
 export const notifyVote = (anecdote) => {
   return {
-    type: 'VOTE',
+    type: 'VOTE_NOTIFICATION',
     data: anecdote
   }
 }
 
 export const notifyNew = (anecdote) => {
   return {
-    type: 'NEW',
+    type: 'NEW_NOTIFICATION',
     data: anecdote
   }
 }
 
 export const notifyReset = () => {
   return {
-    type: 'RESET',
+    type: 'RESET_NOTIFICATION',
     data: null
   }
 }
