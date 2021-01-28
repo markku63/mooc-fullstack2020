@@ -13,10 +13,8 @@ const AnecdoteList = () => {
 
   const dispatch = useDispatch()
 
-  const vote = (id) => {
-    console.log('vote', id)
-    const anecdote = anecdotes.find((p) => p.id === id)
-    dispatch(addVote(id))
+  const vote = (anecdote) => {
+    dispatch(addVote(anecdote))
     dispatch(notifyVote(anecdote))
     setTimeout(() => {dispatch(notifyReset())}, 5000)
   }
@@ -30,7 +28,7 @@ const AnecdoteList = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote)}>vote</button>
           </div>
         </div>
       )}
