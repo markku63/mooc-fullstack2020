@@ -18,7 +18,6 @@ const createNew = async (content) => {
 }
 
 const addVote = async (anecdote) => {
-  console.log('service/addVote', anecdote)
   const object = {
     content: anecdote.content,
     votes: anecdote.votes + 1

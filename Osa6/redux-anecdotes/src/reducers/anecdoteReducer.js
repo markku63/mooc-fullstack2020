@@ -4,7 +4,6 @@ const anecdoteReducer = (state = [], action) => {
   switch(action.type) {
     case 'VOTE':
       const changedAnecdote = action.data
-      console.log('reducer/vote', changedAnecdote)
       const newState = state
         .map(anecdote => anecdote.id !== changedAnecdote.id ? anecdote : changedAnecdote)
         .sort((a, b) => b.votes - a.votes)
