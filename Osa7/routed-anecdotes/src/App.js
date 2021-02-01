@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import {
-  BrowserRouter as Router,
-  Switch, Route, Link
+  Switch, Route, Link, useRouteMatch
 } from 'react-router-dom'
 
 const Menu = () => {
@@ -107,6 +106,8 @@ const App = () => {
 
   const [notification, setNotification] = useState('')
 
+  const match = useRouteMatch('/anecdotes/:id')
+
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
@@ -127,7 +128,7 @@ const App = () => {
   }
 
   return (
-    <Router>
+    <div>
       <h1>Software anecdotes</h1>
       <Menu />
       <Switch>
@@ -142,7 +143,7 @@ const App = () => {
         </Route>
       </Switch>
       <Footer />
-    </Router>
+    </div>
   )
 }
 
