@@ -73,10 +73,6 @@ const App = () => {
   }
 */
 
-  const handleLike = () => {}
-
-  const handleRemove = () => {}
-
   const handleLogout = () => {
     setUser(null)
     storage.logoutUser()
@@ -130,8 +126,6 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          handleLike={handleLike}
-          handleRemove={handleRemove}
           own={user.username===blog.user.username}
         />
       )}

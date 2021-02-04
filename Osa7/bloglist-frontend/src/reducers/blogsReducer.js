@@ -6,6 +6,10 @@ const blogsReducer = (state = [], action) => {
     return action.data
   case 'NEW_BLOG':
     return state.concat(action.data)
+  case 'UPDATE_BLOG':
+    return state.map(b => b.id === action.data.id ? action.data : b)
+  case 'REMOVE_BLOG':
+    return state.filter(b => b.id !== action.data)
   default:
     return state
   }
@@ -28,6 +32,26 @@ export const newBlog = (blog) => {
     dispatch({
       type: 'NEW_BLOG',
       data: newBlog,
+    })
+  }
+}
+
+export const updateBlog = (blog) => {
+  return async (dispatch) => {
+    const updatedBlog = await blogService.update(blog)
+    dispatch({
+      type: 'UPDATE_BLOG',
+      data: updatedBlog,
+    })
+  }
+}
+
+export const removeBlog = (id) => {
+  return async dispatch => {
+    await blogService.remove(id)
+    dispatch({
+      type: 'REMOVE_BLOG',
+      data: id,
     })
   }
 }
