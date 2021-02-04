@@ -2,7 +2,7 @@ import storage from '../utils/storage'
 import loginService from '../services/login'
 import { setNotification } from './notificationReducer'
 
-const userReducer = (state = null, action) => {
+const loggedUserReducer = (state = null, action) => {
   switch(action.type) {
   case 'SET_USER':
     return action.data
@@ -53,4 +53,4 @@ export const logoutUser = () => {
   }
 }
 
-export default userReducer
+export default loggedUserReducer
