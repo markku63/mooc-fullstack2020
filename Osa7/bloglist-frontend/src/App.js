@@ -5,77 +5,33 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import NewBlog from './components/NewBlog'
 
-import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogsReducer'
+import { loadUser, loginUser, logoutUser } from './reducers/userReducer'
 
-import loginService from './services/login'
-import storage from './utils/storage'
+
 
 const App = () => {
   const dispatch = useDispatch()
-  const blogs = useSelector(state => {
-    return state.blogs
-  })
+  const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
 
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   useEffect(() => {
+    dispatch(loadUser())
     dispatch(initializeBlogs())
   }, [dispatch])
 
-  useEffect(() => {
-    const user = storage.loadUser()
-    setUser(user)
-  }, [])
-
-  const notifyWith = (message, type='success') => {
-    dispatch(
-      setNotification({
-        message, type
-      }, 5)
-    )
-  }
-
-  const handleLogin = async (event) => {
+  const handleLogin = (event) => {
     event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-
-      setUsername('')
-      setPassword('')
-      setUser(user)
-      notifyWith(`${user.name} welcome back!`)
-      storage.saveUser(user)
-    } catch(exception) {
-      notifyWith('wrong username/password', 'error')
-    }
+    dispatch(loginUser(username, password))
+    setUsername('')
+    setPassword('')
   }
-
-  /*
-  const handleLike = async (id) => {
-    const blogToLike = blogs.find(b => b.id === id)
-    const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user.id }
-    await blogService.update(likedBlog)
-    setBlogs(blogs.map(b => b.id === id ?  { ...blogToLike, likes: blogToLike.likes + 1 } : b))
-  }
-
-  const handleRemove = async (id) => {
-    const blogToRemove = blogs.find(b => b.id === id)
-    const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
-    if (ok) {
-      await blogService.remove(id)
-      setBlogs(blogs.filter(b => b.id !== id))
-    }
-  }
-*/
 
   const handleLogout = () => {
-    setUser(null)
-    storage.logoutUser()
+    dispatch(logoutUser())
   }
 
   if ( !user ) {
