@@ -13,7 +13,6 @@ import { initializeUsers } from './reducers/usersReducer'
 import { loadUser, loginUser, logoutUser } from './reducers/loggedUserReducer'
 
 
-
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
@@ -77,13 +76,14 @@ const App = () => {
     borderWidth: 1,
     marginBottom: 5
   }
+  const padding = { padding: 5 }
 
   return (
     <Router>
       <Notification />
-      <div>
-        <Link to="/">blogs</Link>
-        <Link to="/users">users</Link>
+      <div style={{ backgroundColor: 'LightGrey' }}>
+        <Link style={padding} to="/">blogs</Link>
+        <Link style={padding} to="/users">users</Link>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </div>
       <h2>blog app</h2>
@@ -99,7 +99,6 @@ const App = () => {
         </Route>
         <Route path="/">
           <NewBlog />
-
           {blogs.sort(byLikes).map(blog =>
             <div key={blog.id} style={blogStyle} className='blog'>
               <Link to={`/blogs/${blog.id}`}><i>{blog.title}</i> by {blog.author}</Link>
