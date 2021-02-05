@@ -6,8 +6,10 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import NewBlog from './components/NewBlog'
 import Users from './components/Users'
+import User from './components/User'
 
 import { initializeBlogs } from './reducers/blogsReducer'
+import { initializeUsers } from './reducers/usersReducer'
 import { loadUser, loginUser, logoutUser } from './reducers/loggedUserReducer'
 
 
@@ -23,6 +25,7 @@ const App = () => {
   useEffect(() => {
     dispatch(loadUser())
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [dispatch])
 
   const handleLogin = (event) => {
@@ -79,6 +82,9 @@ const App = () => {
       </p>
 
       <Switch>
+        <Route path="/users/:id">
+          <User />
+        </Route>
         <Route path="/users">
           <Users />
         </Route>
