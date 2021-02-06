@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { Container, Form, Button } from 'react-bootstrap'
 import { setNotification } from '../reducers/notificationReducer'
 import { newBlog } from '../reducers/blogsReducer'
 
@@ -33,42 +34,42 @@ const NewBlog = () => {
   }
 
   return (
-    <div>
+    <Container>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>create new blog</button>
+        <Button onClick={toggleVisibility}>create new blog</Button>
       </div>
       <div style={showWhenVisible} className="togglableContent">
         <h2>create new</h2>
-        <form onSubmit={handleNewBlog}>
-          <div>
-          author
-            <input
+        <Form onSubmit={handleNewBlog}>
+          <Form.Group controlId="formGroupAuthor">
+            <Form.Label>author</Form.Label>
+            <Form.Control type="text"
               id='author'
               value={author}
               onChange={({ target }) => setAuthor(target.value)}
             />
-          </div>
-          <div>
-          title
-            <input
+          </Form.Group>
+          <Form.Group controlId="formGroupTitle">
+            <Form.Label>title</Form.Label>
+            <Form.Control type="text"
               id='title'
               value={title}
               onChange={({ target }) => setTitle(target.value)}
             />
-          </div>
-          <div>
-          url
-            <input
+          </Form.Group>
+          <Form.Group controlId="formGroupUrl">
+            <Form.Label>url</Form.Label>
+            <Form.Control type="text"
               id='url'
               value={url}
               onChange={({ target }) => setUrl(target.value)}
             />
-          </div>
-          <button id="create">create</button>
-        </form>
-        <button onClick={toggleVisibility}>cancel</button>
+          </Form.Group>
+          <Button variant="success" type="submit" id="create">create</Button>
+        </Form>
+        <Button variant="danger" onClick={toggleVisibility}>cancel</Button>
       </div>
-    </div>
+    </Container>
   )
 }
 

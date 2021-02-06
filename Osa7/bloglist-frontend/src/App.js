@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { Navbar, Container, Form, Button, Nav } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import Blog from './components/Blog'
 import Notification from './components/Notification'
@@ -40,31 +42,33 @@ const App = () => {
 
   if ( !user ) {
     return (
-      <div>
+      <Container>
         <h2>login to application</h2>
 
         <Notification />
 
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
+        <Form onSubmit={handleLogin}>
+          <Form.Group controlId="formGroupUsername">
+            <Form.Label>username</Form.Label>
+            <Form.Control
+              type="text"
               id='username'
               value={username}
               onChange={({ target }) => setUsername(target.value)}
             />
-          </div>
-          <div>
-            password
-            <input
+          </Form.Group>
+          <Form.Group controlId="formGroupPassword">
+            <Form.Label>password</Form.Label>
+            <Form.Control
+              type="password"
               id='password'
               value={password}
               onChange={({ target }) => setPassword(target.value)}
             />
-          </div>
-          <button id='login'>login</button>
-        </form>
-      </div>
+            <Button id='login' variant="primary" type="submit">login</Button>
+          </Form.Group>
+        </Form>
+      </Container>
     )
   }
 
@@ -76,37 +80,38 @@ const App = () => {
     borderWidth: 1,
     marginBottom: 5
   }
-  const padding = { padding: 5 }
 
   return (
-    <Router>
-      <Notification />
-      <div style={{ backgroundColor: 'LightGrey' }}>
-        <Link style={padding} to="/">blogs</Link>
-        <Link style={padding} to="/users">users</Link>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </div>
-      <h2>blog app</h2>
-      <Switch>
-        <Route path="/users/:id">
-          <User />
-        </Route>
-        <Route path="/blogs/:id">
-          <Blog />
-        </Route>
-        <Route path="/users">
-          <Users />
-        </Route>
-        <Route path="/">
-          <NewBlog />
-          {blogs.sort(byLikes).map(blog =>
-            <div key={blog.id} style={blogStyle} className='blog'>
-              <Link to={`/blogs/${blog.id}`}><i>{blog.title}</i> by {blog.author}</Link>
-            </div>
-          )}
-        </Route>
-      </Switch>
-    </Router>
+    <Container>
+      <Router>
+        <Notification />
+        <Navbar bg="light">
+          <LinkContainer to="/"><Nav.Link>blogs</Nav.Link></LinkContainer>
+          <LinkContainer to="/users"><Nav.Link>users</Nav.Link></LinkContainer>
+          <Navbar.Text>{user.name} logged in </Navbar.Text><Button variant="outline-primary" onClick={handleLogout}>logout</Button>
+        </Navbar>
+        <h2>blog app</h2>
+        <Switch>
+          <Route path="/users/:id">
+            <User />
+          </Route>
+          <Route path="/blogs/:id">
+            <Blog />
+          </Route>
+          <Route path="/users">
+            <Users />
+          </Route>
+          <Route path="/">
+            <NewBlog />
+            {blogs.sort(byLikes).map(blog =>
+              <div key={blog.id} style={blogStyle} className='blog'>
+                <Link to={`/blogs/${blog.id}`}><i>{blog.title}</i> by {blog.author}</Link>
+              </div>
+            )}
+          </Route>
+        </Switch>
+      </Router>
+    </Container>
   )
 }
 
