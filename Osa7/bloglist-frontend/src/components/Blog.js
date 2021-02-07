@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { updateBlog, removeBlog } from '../reducers/blogsReducer'
+import { updateBlog, removeBlog, commentBlog } from '../reducers/blogsReducer'
 
 const Blog = () => {
+  const [comment, setComment] = useState('')
   const dispatch = useDispatch()
   const id = useParams().id
   const blogs = useSelector(state => state.blogs)
@@ -27,6 +28,11 @@ const Blog = () => {
     }
   }
 
+  const newComment = async (event) => {
+    event.preventDefault()
+    dispatch(commentBlog(id, comment))
+    setComment('')
+  }
 
   return (
     <div className='blog'>
@@ -46,10 +52,18 @@ const Blog = () => {
       <h3>
         comments
       </h3>
+      <form onSubmit={newComment}>
+        <input type="text"
+          id="comment"
+          value={comment}
+          onChange={({ target }) => setComment(target.value)}
+        />
+        <button type="submit">add comment</button>
+      </form>
       {blog.comments &&
       <ul>
-        {blog.comments.map((comment, i) =>
-          <li key={i}>{comment}</li>)}
+        {blog.comments.map((comm, i) =>
+          <li key={i}>{comm}</li>)}
       </ul>
       }
     </div>

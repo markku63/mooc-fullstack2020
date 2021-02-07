@@ -52,7 +52,6 @@ const App = () => {
             <Form.Label>username</Form.Label>
             <Form.Control
               type="text"
-              id='username'
               value={username}
               onChange={({ target }) => setUsername(target.value)}
             />
@@ -61,11 +60,10 @@ const App = () => {
             <Form.Label>password</Form.Label>
             <Form.Control
               type="password"
-              id='password'
               value={password}
               onChange={({ target }) => setPassword(target.value)}
             />
-            <Button id='login' variant="primary" type="submit">login</Button>
+            <Button variant="primary" type="submit">login</Button>
           </Form.Group>
         </Form>
       </Container>

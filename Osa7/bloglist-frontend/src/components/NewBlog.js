@@ -44,7 +44,6 @@ const NewBlog = () => {
           <Form.Group controlId="formGroupAuthor">
             <Form.Label>author</Form.Label>
             <Form.Control type="text"
-              id='author'
               value={author}
               onChange={({ target }) => setAuthor(target.value)}
             />
@@ -52,7 +51,6 @@ const NewBlog = () => {
           <Form.Group controlId="formGroupTitle">
             <Form.Label>title</Form.Label>
             <Form.Control type="text"
-              id='title'
               value={title}
               onChange={({ target }) => setTitle(target.value)}
             />
@@ -60,12 +58,11 @@ const NewBlog = () => {
           <Form.Group controlId="formGroupUrl">
             <Form.Label>url</Form.Label>
             <Form.Control type="text"
-              id='url'
               value={url}
               onChange={({ target }) => setUrl(target.value)}
             />
           </Form.Group>
-          <Button variant="success" type="submit" id="create">create</Button>
+          <Button variant="success" type="submit">create</Button>
         </Form>
         <Button variant="danger" onClick={toggleVisibility}>cancel</Button>
       </div>
