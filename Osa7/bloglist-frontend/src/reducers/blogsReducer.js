@@ -64,6 +64,7 @@ export const removeBlog = (id) => {
 
 export const commentBlog = (id, comment) => {
   return async dispatch => {
+    console.log('commentBlog: id=', id, 'comment=', comment)
     await blogService.addComment(id, comment)
     dispatch({
       type: 'COMMENT_BLOG',

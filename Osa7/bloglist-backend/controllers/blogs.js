@@ -48,16 +48,13 @@ blogsRouter.post('/:id/comments', async (request, response) => {
     return response.status(401).json({ error: 'invalid token' })
   }
   const oldBlog = await Blog.findById(request.params.id)
-  console.log('oldBlog=', oldBlog)
   const comment = request.body.comment
   const newBlog = { comments: oldBlog.comments ? oldBlog.comments.concat(comment) : [comment] }
-  console.log('newBlog=', newBlog)
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, newBlog, { new: true })
   if (!updatedBlog) {
     return response.status(404).json({ error: 'no such blog' })
   }
   await updatedBlog.populate('user', { username: 1, name: 1 }).execPopulate()
-  console.log('updatedBlog=', updatedBlog)
   response.json(updatedBlog.toJSON())
 })
 

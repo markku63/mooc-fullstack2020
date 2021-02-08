@@ -30,7 +30,7 @@ const remove = (id) => {
 }
 
 const addComment = (id, comment) => {
-  const request = axios.post(`${baseUrl}/${id}/comments`, comment, getConfig())
+  const request = axios.post(`${baseUrl}/${id}/comments`, { comment }, getConfig())
   return request.then(response => response.data)
 }
 

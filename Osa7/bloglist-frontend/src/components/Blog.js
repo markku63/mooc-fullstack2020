@@ -30,6 +30,7 @@ const Blog = () => {
 
   const newComment = async (event) => {
     event.preventDefault()
+    console.log('newComment: id=', id, 'comment=', comment)
     dispatch(commentBlog(id, comment))
     setComment('')
   }
