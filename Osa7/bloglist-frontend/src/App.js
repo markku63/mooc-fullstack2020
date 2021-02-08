@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-import { Navbar, Container, Form, Button, Nav } from 'react-bootstrap'
+import { Navbar, Container, Form, Button, Nav, ListGroup } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import Blog from './components/Blog'
@@ -71,13 +71,6 @@ const App = () => {
   }
 
   const byLikes = (b1, b2) => b2.likes - b1.likes
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
 
   return (
     <Container>
@@ -86,7 +79,12 @@ const App = () => {
         <Navbar bg="light">
           <LinkContainer to="/"><Nav.Link>blogs</Nav.Link></LinkContainer>
           <LinkContainer to="/users"><Nav.Link>users</Nav.Link></LinkContainer>
-          <Navbar.Text>{user.name} logged in </Navbar.Text><Button variant="outline-primary" onClick={handleLogout}>logout</Button>
+          <Navbar.Text className="px-3">
+            {user.name} logged in
+          </Navbar.Text>
+          <Button variant="outline-primary" onClick={handleLogout}>
+            logout
+          </Button>
         </Navbar>
         <h2>blog app</h2>
         <Switch>
@@ -101,11 +99,13 @@ const App = () => {
           </Route>
           <Route path="/">
             <NewBlog />
-            {blogs.sort(byLikes).map(blog =>
-              <div key={blog.id} style={blogStyle} className='blog'>
-                <Link to={`/blogs/${blog.id}`}><i>{blog.title}</i> by {blog.author}</Link>
-              </div>
-            )}
+            <ListGroup>
+              {blogs.sort(byLikes).map(blog =>
+                <ListGroup.Item key={blog.id} >
+                  <Link to={`/blogs/${blog.id}`}><i>{blog.title}</i> by {blog.author}</Link>
+                </ListGroup.Item>
+              )}
+            </ListGroup>
           </Route>
         </Switch>
       </Router>

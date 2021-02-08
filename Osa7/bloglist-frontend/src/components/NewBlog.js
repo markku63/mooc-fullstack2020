@@ -64,7 +64,7 @@ const NewBlog = () => {
           </Form.Group>
           <Button variant="success" type="submit">create</Button>
         </Form>
-        <Button variant="danger" onClick={toggleVisibility}>cancel</Button>
+        <Button variant="warning" onClick={toggleVisibility}>cancel</Button>
       </div>
     </Container>
   )
