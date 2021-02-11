@@ -1,0 +1,17 @@
+{
+  "name": "exercise-calculator",
+  "version": "1.0.0",
+  "description": "Full Stack Open Part9 exercises 9.1-9.7",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ts-node": "ts-node",
+    "calculateBmi": "ts-node bmicalculator.ts"
+  },
+  "author": "Markku Kolkka",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  }
+}
