@@ -1,36 +1,19 @@
 
 import React, { useState } from 'react'
-import { useQuery, useApolloClient } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Recommendations from './components/Recommendations'
-import { ALL_AUTHORS } from './queries'
-
-const Notify = ({ errorMessage }) => {
-  if ( !errorMessage ) {
-    return null
-  }
-
-  return (
-    <div style={{color: 'red'}}>
-      {errorMessage}
-    </div>
-  )
-}
+import Notify from './components/Notify'
 
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-  
-  const result = useQuery(ALL_AUTHORS)
-  const client = useApolloClient()
 
-  if (result.loading) {
-    return <div>loading...</div>
-  }
+  const client = useApolloClient()
 
   const notify = (message) => {
     setErrorMessage(message)
@@ -75,7 +58,6 @@ const App = () => {
       <Authors
         show={page === 'authors'}
         logged={!!token}
-        authors={result.data.allAuthors} 
       />
 
       <Books
