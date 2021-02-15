@@ -5,7 +5,8 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
-import { ALL_AUTHORS, ALL_BOOKS } from './queries'
+import Recommendations from './components/Recommendations'
+import { ALL_AUTHORS, ALL_BOOKS, FAVORITE_GENRE } from './queries'
 
 const Notify = ({ errorMessage }) => {
   if ( !errorMessage ) {
@@ -24,6 +25,7 @@ const App = () => {
   const [token, setToken] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [getBooks, booksResult] = useLazyQuery(ALL_BOOKS)
+  const [getFavorites, favoritesResult] = useLazyQuery(FAVORITE_GENRE)
   const result = useQuery(ALL_AUTHORS)
   const client = useApolloClient()
 
@@ -42,7 +44,7 @@ const App = () => {
     setToken(null)
     localStorage.clear()
     client.resetStore()
-    if (page === 'add') {
+    if (!(page === 'authors' || page === 'books')) {
       // Get out of pages requiring login
       setPage('authors')
     }
@@ -65,6 +67,11 @@ const App = () => {
             return (
               <>
                 <button onClick={() => setPage('add')}>add book</button>
+                <button onClick={() => {
+                  getFavorites()
+                  setPage('recommend')}}>
+                    recommend
+                </button>
                 <button onClick={handleLogout}>logout</button>
               </>
             )
@@ -89,6 +96,11 @@ const App = () => {
 
       <NewBook
         show={page === 'add'}
+      />
+
+      <Recommendations
+        show={page === 'recommend'}
+        result={favoritesResult}
       />
 
       <Login

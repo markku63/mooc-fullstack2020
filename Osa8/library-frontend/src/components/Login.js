@@ -15,7 +15,6 @@ const Login = (props) => {
     if (result.data) {
       const token = result.data.login.value
       props.setToken(token)
-      console.log('Token=', token)
       localStorage.setItem('library-user-token', token)
     }
   }, [result.data]) // eslint-disable-line react-hooks/exhaustive-deps
