@@ -1,18 +1,19 @@
 
 import React, { useState } from 'react'
-import { useApolloClient } from '@apollo/client'
+import { useQuery, useApolloClient } from '@apollo/client'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Recommendations from './components/Recommendations'
 import Notify from './components/Notify'
+import { FAVORITE_GENRE } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-
+  const favoritesResult = useQuery(FAVORITE_GENRE)
   const client = useApolloClient()
 
   const notify = (message) => {
@@ -26,6 +27,7 @@ const App = () => {
     setToken(null)
     localStorage.clear()
     client.resetStore()
+    favoritesResult.refetch()
     if (!(page === 'authors' || page === 'books')) {
       // Get out of pages requiring login
       setPage('authors')
@@ -69,6 +71,7 @@ const App = () => {
       />
 
       <Recommendations
+        favoritesResult={favoritesResult}
         show={page === 'recommend'}
       />
 
@@ -76,6 +79,7 @@ const App = () => {
         show={page === 'login'}
         setToken={setToken}
         notify={notify}
+        favoritesResult={favoritesResult}
       />
     </div>
   )
