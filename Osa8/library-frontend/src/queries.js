@@ -74,3 +74,9 @@ export const FAVORITE_GENRE = gql`
     }
   }
 `
+
+export const ALL_GENRES = gql`
+  query {
+    allGenres
+  }
+`

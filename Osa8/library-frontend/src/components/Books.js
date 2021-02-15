@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useLazyQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
+import { useQuery, useLazyQuery } from '@apollo/client'
+import { ALL_BOOKS, ALL_GENRES } from '../queries'
 
 const Books = (props) => {
   const [genre, setGenre] = useState(null)
+  const allGenres = useQuery(ALL_GENRES)
   const [getResult, result] = useLazyQuery(ALL_BOOKS)
 
   useEffect(() => {
@@ -15,20 +16,15 @@ const Books = (props) => {
     return null
   }
 
-  if (!result.data) {
+  if (!(result.data && allGenres.data)) {
     return (
       <div>loading...</div>
     )
   }
 
   const books = result.data.allBooks
-  const genres = new Set()
-  for (let b of books) {
-    for (let g of b.genres) {
-      genres.add(g)
-    }
-  }
-
+  const genres = allGenres.data.allGenres
+  
   return (
     <div>
       <h2>books</h2>
