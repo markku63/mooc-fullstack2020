@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react'
-import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client'
+import { useQuery, useApolloClient } from '@apollo/client'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Recommendations from './components/Recommendations'
-import { ALL_AUTHORS, ALL_BOOKS, FAVORITE_GENRE } from './queries'
+import { ALL_AUTHORS } from './queries'
 
 const Notify = ({ errorMessage }) => {
   if ( !errorMessage ) {
@@ -24,8 +24,7 @@ const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-  const [getBooks, booksResult] = useLazyQuery(ALL_BOOKS)
-  const [getFavorites, favoritesResult] = useLazyQuery(FAVORITE_GENRE)
+  
   const result = useQuery(ALL_AUTHORS)
   const client = useApolloClient()
 
@@ -55,23 +54,13 @@ const App = () => {
       <Notify errorMessage={errorMessage} />
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
-        <button onClick={() => {
-          getBooks()
-          setPage('books')
-          }
-          }>
-          books
-        </button>
+        <button onClick={() => setPage('books')}>books</button>
         {(() => {
           if (token) {
             return (
               <>
                 <button onClick={() => setPage('add')}>add book</button>
-                <button onClick={() => {
-                  getFavorites()
-                  setPage('recommend')}}>
-                    recommend
-                </button>
+                <button onClick={() => setPage('recommend')}>recommend</button>
                 <button onClick={handleLogout}>logout</button>
               </>
             )
@@ -91,7 +80,6 @@ const App = () => {
 
       <Books
         show={page === 'books'}
-        result={booksResult} 
       />
 
       <NewBook
@@ -100,7 +88,6 @@ const App = () => {
 
       <Recommendations
         show={page === 'recommend'}
-        result={favoritesResult}
       />
 
       <Login
