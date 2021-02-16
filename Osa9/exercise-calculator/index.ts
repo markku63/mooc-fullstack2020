@@ -30,10 +30,17 @@ app.get('/bmi', (req, res) => {
 });
 
 app.post('/exercises', (req, res) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { dailyExercises, target } = req.body;
-  const result = calculateExercises(dailyExercises, target);
-  res.json(result);
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { daily_exercises, target } = req.body;
+    if (daily_exercises && target) {
+      res.json(calculateExercises(daily_exercises, target));
+    } else {
+      res.status(400).json({ error: "parameters missing" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: 'malformatted parameters'});
+  }
 });
 
 const PORT = 3003;

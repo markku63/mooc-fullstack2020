@@ -14,6 +14,9 @@ interface ExerciseValues {
 }
 
 export const calculateExercises = (dailyExercises: Array<number>, target: number): TrainingResult => {
+  if (!dailyExercises || !target || isNaN(Number(target))) {
+    throw new Error('missing or incorrect parameters');
+  }
   const periodLength = dailyExercises.length;
   if (periodLength === 0) throw new Error('Empty exercise table');
   const trainingDays = dailyExercises.reduce((total, curr) => { return (curr > 0 ? total + 1 : total);}, 0);
@@ -60,6 +63,6 @@ const parseTrainingArguments = (args: Array<string>): ExerciseValues => {
 try {
   const {dailyExercises, target} = parseTrainingArguments(process.argv);
   console.log(calculateExercises(dailyExercises, target));
-} catch (e: unknown) {
+} catch (e) {
   console.log('Error:', e.message);
 }
