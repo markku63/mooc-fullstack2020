@@ -3,7 +3,7 @@ interface BmiValues {
   weight: number;
 }
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   if (height <= 0 || weight <= 0) {
     throw new Error('Impossible inpu values')
   }
