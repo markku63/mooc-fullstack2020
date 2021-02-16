@@ -5,7 +5,7 @@ interface BmiValues {
 
 export const calculateBmi = (height: number, weight: number): string => {
   if (height <= 0 || weight <= 0) {
-    throw new Error('Impossible inpu values')
+    throw new Error('Impossible inpu values');
   }
   const bmi = weight / ((height/100)**2);
   if (bmi < 15) {
@@ -23,9 +23,9 @@ export const calculateBmi = (height: number, weight: number): string => {
   } else if (bmi < 40) {
     return 'Obese Class II (Severely obese)';
   } else {
-    return 'Obese Class III (Very severely obese)'
+    return 'Obese Class III (Very severely obese)';
   }
-}
+};
 
 const parseBmiArguments = (args: Array<string>): BmiValues => {
   if (args.length < 4) throw new Error('Not enough arguments');
@@ -35,15 +35,15 @@ const parseBmiArguments = (args: Array<string>): BmiValues => {
     return {
       height: Number(args[2]),
       weight: Number(args[3])
-    }
+    };
   } else {
     throw new Error('Provided values were not numbers!');
   }
-}
+};
 
 try {
   const { height, weight } = parseBmiArguments(process.argv);
   console.log(calculateBmi(height, weight));
-} catch(e) {
+} catch(e: unknown) {
   console.log('Error:', e.message);
 }
