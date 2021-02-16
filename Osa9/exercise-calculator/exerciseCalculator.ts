@@ -64,5 +64,5 @@ try {
   const {dailyExercises, target} = parseTrainingArguments(process.argv);
   console.log(calculateExercises(dailyExercises, target));
 } catch (e) {
-  console.log('Error:', e.message);
+  console.log('Error:', (e as Error).message);
 }
