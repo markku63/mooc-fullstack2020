@@ -13,7 +13,7 @@ interface ExerciseValues {
   target: number
 }
 
-const calculateExercises = (dailyExercises: Array<number>, target: number): TrainingResult => {
+export const calculateExercises = (dailyExercises: Array<number>, target: number): TrainingResult => {
   const periodLength = dailyExercises.length;
   if (periodLength === 0) throw new Error('Empty exercise table');
   const trainingDays = dailyExercises.reduce((total, curr) => { return (curr > 0 ? total + 1 : total);}, 0);
