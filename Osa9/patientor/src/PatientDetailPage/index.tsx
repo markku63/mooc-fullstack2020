@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Container, Header, Icon } from 'semantic-ui-react';
-import { useStateValue } from '../state';
+import { useStateValue, updatePatient } from '../state';
 import { Patient } from '../types';
 import { apiBaseUrl } from '../constants';
 
@@ -17,7 +17,7 @@ const PatientDetailPage: React.FC = () => {
       try {
         const { data: patientFromApi } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
         setPatient(patientFromApi);
-        dispatch({ type: 'UPDATE_PATIENT', payload: patientFromApi});
+        dispatch(updatePatient(patientFromApi));
       } catch (e) {
         console.error(e);
       }
@@ -26,7 +26,7 @@ const PatientDetailPage: React.FC = () => {
     if (!patient || !patient.ssn) {
       fetchPatientDetail();
     }
-  }, [id, patient]);
+  }, [id, patient, dispatch]);
 
   if (!patient) {
     return null;
