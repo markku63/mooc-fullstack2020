@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Container, Header, Icon, List, Segment } from 'semantic-ui-react';
 import { useStateValue, updatePatient } from '../state';
-import { Patient, Entry } from '../types';
+import { Patient, Entry, OccupationalHealthcareEntry, HospitalEntry, HealthCheckEntry, HealthCheckRating } from '../types';
 import { apiBaseUrl } from '../constants';
 
 const assertNever = (value: never): never => {
@@ -12,11 +12,12 @@ const assertNever = (value: never): never => {
   );
 };
 
-const HospitalEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
+const Hospital: React.FC<{ entry: HospitalEntry }> = ({ entry }) => {
   const [{ diagnoses}] = useStateValue();
   return (
     <Segment>
-      {entry.date} <em>{entry.description}</em>
+      <Header as='h3'>{entry.date} <Icon name='hospital' /></Header>
+      <em>{entry.description}</em>
       <List bulleted>
         {entry.diagnosisCodes?.map(diag => (
           <List.Item>
@@ -24,15 +25,34 @@ const HospitalEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
           </List.Item>
         ))}
       </List>
+      <Container fluid>Discharged from hospital: {entry.discharge.date} reason: {entry.discharge.criteria}</Container>
     </Segment>
   );
 };
 
-const HealthCheckEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
+const HealthCheck: React.FC<{ entry: HealthCheckEntry }> = ({ entry }) => {
   const [{ diagnoses}] = useStateValue();
+  let heartColor: 'green'|'yellow'|'orange'|'red'|undefined;
+  switch (entry.healthCheckRating) {
+    case HealthCheckRating.Healthy:
+      heartColor = 'green';
+      break;
+    case HealthCheckRating.LowRisk:
+      heartColor = 'yellow';
+      break;
+    case HealthCheckRating.HighRisk:
+      heartColor = 'orange';
+      break;
+    case HealthCheckRating.CriticalRisk:
+      heartColor = 'red';
+      break;
+    default:
+      break;
+  }
   return (
     <Segment>
-      {entry.date} <em>{entry.description}</em>
+      <Header as='h3'>{entry.date} <Icon name='user md' /></Header>
+      <em>{entry.description}</em>
       <List bulleted>
         {entry.diagnosisCodes?.map(diag => (
           <List.Item>
@@ -40,15 +60,17 @@ const HealthCheckEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
           </List.Item>
         ))}
       </List>
+      <Icon name='heart' color={heartColor} />
     </Segment>
   );
 };
 
-const OccupationalHealthcareEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
+const OccupationalHealthcare: React.FC<{ entry: OccupationalHealthcareEntry }> = ({ entry }) => {
   const [{ diagnoses}] = useStateValue();
   return (
     <Segment>
-      {entry.date} <em>{entry.description}</em>
+      <Header as='h3'>{entry.date} <Icon name='stethoscope'/> {entry.employerName}</Header>
+      <em>{entry.description}</em>
       <List bulleted>
         {entry.diagnosisCodes?.map(diag => (
           <List.Item>
@@ -56,6 +78,7 @@ const OccupationalHealthcareEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
           </List.Item>
         ))}
       </List>
+      {entry.sickLeave && <Container fluid>Sickleave from {entry.sickLeave.startDate} to {entry.sickLeave.endDate}</Container> }
     </Segment>
   );
 };
@@ -63,11 +86,11 @@ const OccupationalHealthcareEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
 const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
   switch (entry.type) {
   case "Hospital":
-    return <HospitalEntry entry={entry} />;
+    return <Hospital entry={entry} />;
   case "HealthCheck":
-    return <HealthCheckEntry entry={entry} />;
+    return <HealthCheck entry={entry} />;
   case "OccupationalHealthcare":
-    return <OccupationalHealthcareEntry entry={entry} />;
+    return <OccupationalHealthcare entry={entry} />;
   default:
     return assertNever(entry);
   }
