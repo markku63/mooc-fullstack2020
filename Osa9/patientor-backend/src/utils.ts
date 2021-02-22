@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/explicit-module-boundary-types */
-import { NewPatient, Gender } from './types';
+import { NewPatient, Gender, Entry, HealthCheckRating } from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -12,6 +12,10 @@ const isDate = (date: string): boolean => {
 const isGender = (param: any): param is Gender => {
   return Object.values(Gender).includes(param);
 };
+
+const isHealthCheckRating = (param: any): param is HealthCheckRating => {
+  return Object.values(HealthCheckRating).includes(param);
+}
 
 const parseName = (name: any): string => {
   if (!name || !isString(name)) {
@@ -48,7 +52,14 @@ const parseOccupation = (occupation: any): string => {
   return occupation;
 };
 
-const toNewPatient = (object: any): NewPatient => {
+const parseDescription = (description: any): string => {
+  if (!description || !isString(description)) {
+    throw new Error(`Incorrect or missing description: ${description}`);
+  }
+  return description;
+};
+
+export const toNewPatient = (object: any): NewPatient => {
   const newPatient: NewPatient = {
     name: parseName(object.name),
     dateOfBirth: parseDate(object.dateOfBirth),
@@ -59,4 +70,9 @@ const toNewPatient = (object: any): NewPatient => {
   return newPatient;
 };
 
-export default toNewPatient;
+export const toNewEntry = (object: any): Entry => {
+  const description = parseDescription(object.description);
+  const date = parseDate(object.date);
+  
+
+};
