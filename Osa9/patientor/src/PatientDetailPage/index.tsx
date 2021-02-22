@@ -8,7 +8,7 @@ import { apiBaseUrl } from '../constants';
 
 const PatientDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnoses }, dispatch] = useStateValue();
   const [patient, setPatient] = useState<Patient|undefined>(Object.values(patients).find(p => p.id === id));
   let genderIcon: 'man'|'woman'|'other gender';
 
@@ -63,7 +63,7 @@ const PatientDetailPage: React.FC = () => {
             <List bulleted>
               {entry.diagnosisCodes?.map(diag => (
                 <List.Item>
-                  {diag}
+                  {diag} {Object.values(diagnoses).find(p => p.code === diag)?.name}
                 </List.Item>
               ))}
             </List>
