@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/explicit-module-boundary-types */
-import { NewPatient, Gender, Entry, HealthCheckRating, EntryType, Discharge } from './types';
+import { NewPatient, Gender, Entry, HealthCheckRating, EntryType, Discharge, Diagnose, DateRange } from './types';
 import { v4 as uuidv4 } from 'uuid';
+import diagnoseService from './services/diagnoseService';
+
+const diagnosisCodeSet = new Set(diagnoseService.getEntries().map(d => d.code));
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -10,16 +13,36 @@ const isDate = (date: string): boolean => {
   return Boolean(Date.parse(date));
 };
 
+const isDateRange = (daterange: any): daterange is DateRange => {
+  return (
+    daterange
+    && typeof daterange === 'object'
+    && 'startDate' in daterange
+    && 'endDate' in daterange
+    && isDate(daterange['startDate'])
+    && isDate(daterange['endDate'])
+  )
+}
+
 const isGender = (param: any): param is Gender => {
   return Object.values(Gender).includes(param);
 };
 
 const isHealthCheckRating = (param: any): param is HealthCheckRating => {
-  return Object.values(HealthCheckRating).includes(param);
+  return !isNaN(Number(param)) && Object.values(HealthCheckRating).includes(param);
 };
 
 const isEntryType = (param: any): param is EntryType => {
   return isString(param) && (param === "HealthCheck" || param === "OccupationalHealthcare" || param === "Hospital");
+};
+
+const isDiagnosisCodes = (param: any): param is Array<Diagnose['code']> => {
+  return (
+    Array.isArray(param)
+    && param.length > 0
+    && isString(param[0])
+    && param.every(p => diagnosisCodeSet.has(p))
+  )
 };
 
 const parseName = (name: any): string => {
@@ -79,7 +102,7 @@ const parseType = (type: any): EntryType => {
 };
 
 const parseHealthCheckRating = (rating: any): HealthCheckRating => {
-  if (!rating || !isHealthCheckRating(rating)) {
+  if (!isHealthCheckRating(rating)) {
     throw new Error(`Incorrect or missing health check rating: ${rating}`);
   }
   return rating;
@@ -106,6 +129,20 @@ const parseEmployer = (employer: any): string => {
   return employer;
 };
 
+const parseDiagnosisCodes = (diagnosisCodes: any): Array<Diagnose['code']> | undefined => {
+  if (!diagnosisCodes || !isDiagnosisCodes(diagnosisCodes)) {
+    return undefined;
+  }
+  return diagnosisCodes;
+};
+
+const parseSickleave = (sickLeave: any): DateRange | undefined => {
+  if (!sickLeave || !isDateRange(sickLeave)) {
+    return undefined;
+  }
+  return sickLeave;
+}
+
 export const toNewPatient = (object: any): NewPatient => {
   const newPatient: NewPatient = {
     name: parseName(object.name),
@@ -123,6 +160,7 @@ export const toNewEntry = (object: any): Entry => {
   const date = parseDate(object.date);
   const specialist = parseSpecialist(object.specialist);
   const type = parseType(object.type);
+  const diagnosisCodes = parseDiagnosisCodes(object.diagnosisCodes);
   switch (type) {
     case "HealthCheck":
       newEntry = {
@@ -131,6 +169,7 @@ export const toNewEntry = (object: any): Entry => {
         date,
         specialist,
         description,
+        diagnosisCodes,
         healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
       };
       break;
@@ -141,6 +180,7 @@ export const toNewEntry = (object: any): Entry => {
         date,
         specialist,
         description,
+        diagnosisCodes,
         discharge: parseDischarge(object.discharge),
       };
       break;
@@ -151,7 +191,9 @@ export const toNewEntry = (object: any): Entry => {
         date,
         specialist,
         description,
+        diagnosisCodes,
         employerName: parseEmployer(object.employerName),
+        sickLeave: parseSickleave(object.sickLeave),
       };
       break;
   
