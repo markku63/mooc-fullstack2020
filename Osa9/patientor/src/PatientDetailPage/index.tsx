@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { Container, Header, Icon, List, Segment } from 'semantic-ui-react';
+import { Container, Header, Icon, List, Segment, Button } from 'semantic-ui-react';
 import { useStateValue, updatePatient } from '../state';
 import { Patient, Entry, OccupationalHealthcareEntry, HospitalEntry, HealthCheckEntry, HealthCheckRating } from '../types';
 import { apiBaseUrl } from '../constants';
+import AddEntryModal from '../AddEntryModal';
 
 const assertNever = (value: never): never => {
   throw new Error(
@@ -100,7 +101,14 @@ const PatientDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [{ patients }, dispatch] = useStateValue();
   const [patient, setPatient] = useState<Patient|undefined>(Object.values(patients).find(p => p.id === id));
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   let genderIcon: 'man'|'woman'|'other gender';
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+  }
 
   useEffect(() => {
     const fetchPatientDetail = async () => {
@@ -149,6 +157,11 @@ const PatientDetailPage: React.FC = () => {
       {patient.entries?.map(entry => (
         <EntryDetails entry={entry} />
       ))}
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onSubmit={null}
+        onClose={closeModal}
+       />
     </Container>
   )
 };
