@@ -24,7 +24,7 @@ interface Props {
 export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
   const [{ diagnoses }] = useStateValue();
   const now = new Date();
-  const datestring = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+  const datestring = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
 
   return (
     <Formik
@@ -45,6 +45,11 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         if (!values.description) {
           errors.description = requiredError;
         }
+        if (!values.date) {
+          errors.date = requiredError;
+        } else if (isNaN(Date.parse(values.date))) {
+          errors.date = 'Invalid date';
+        }
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
@@ -61,7 +66,6 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
               component={TextField}
             />
             <Field
-              type="date"
               label="Date"
               placeholder="YYYY-MM-DD"
               name="date"
