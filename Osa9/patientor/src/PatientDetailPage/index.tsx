@@ -6,6 +6,7 @@ import { useStateValue, updatePatient } from '../state';
 import { Patient, Entry, OccupationalHealthcareEntry, HospitalEntry, HealthCheckEntry, HealthCheckRating } from '../types';
 import { apiBaseUrl } from '../constants';
 import AddEntryModal from '../AddEntryModal';
+import { EntryFormValues } from '../AddEntryModal/AddEntryForm';
 
 const assertNever = (value: never): never => {
   throw new Error(
@@ -102,13 +103,31 @@ const PatientDetailPage: React.FC = () => {
   const [{ patients }, dispatch] = useStateValue();
   const [patient, setPatient] = useState<Patient|undefined>(Object.values(patients).find(p => p.id === id));
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>();
+
   let genderIcon: 'man'|'woman'|'other gender';
 
   const openModal = (): void => setModalOpen(true);
 
   const closeModal = (): void => {
     setModalOpen(false);
-  }
+    setError(undefined);
+  };
+
+  const submitNewHealthCheck = async (values: EntryFormValues) => {
+    try {
+      const { data: updatedPatient } = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+      dispatch(updatePatient(updatedPatient));
+      setPatient(updatedPatient);
+      closeModal();
+    } catch(e) {
+      console.error(e.response.data);
+      setError(e.response.data.console.error);
+    }
+  };
 
   useEffect(() => {
     const fetchPatientDetail = async () => {
@@ -119,7 +138,7 @@ const PatientDetailPage: React.FC = () => {
       } catch (e) {
         console.error(e);
       }
-    }
+    };
     // SSN isn't in the public patient data, only in individual details
     if (!patient || !patient.ssn) {
       fetchPatientDetail();
@@ -159,11 +178,13 @@ const PatientDetailPage: React.FC = () => {
       ))}
       <AddEntryModal
         modalOpen={modalOpen}
-        onSubmit={null}
+        onSubmit={submitNewHealthCheck}
         onClose={closeModal}
+        error={error}
        />
+       <Button onClick={() => openModal()}>Add new health check</Button>
     </Container>
-  )
+  );
 };
 
 export default PatientDetailPage;

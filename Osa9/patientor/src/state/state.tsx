@@ -6,7 +6,7 @@ import { Action } from "./reducer";
 export interface State {
   patients: { [id: string]: Patient };
   diagnoses: { [code: string]: Diagnosis };
-};
+}
 
 const initialState: State = {
   patients: {},

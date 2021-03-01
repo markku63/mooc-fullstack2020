@@ -21,8 +21,8 @@ const isDateRange = (daterange: any): daterange is DateRange => {
     && 'endDate' in daterange
     && isDate(daterange['startDate'])
     && isDate(daterange['endDate'])
-  )
-}
+  );
+};
 
 const isGender = (param: any): param is Gender => {
   return Object.values(Gender).includes(param);
@@ -42,7 +42,7 @@ const isDiagnosisCodes = (param: any): param is Array<Diagnose['code']> => {
     && param.length > 0
     && isString(param[0])
     && param.every(p => diagnosisCodeSet.has(p))
-  )
+  );
 };
 
 const parseName = (name: any): string => {
@@ -141,7 +141,7 @@ const parseSickleave = (sickLeave: any): DateRange | undefined => {
     return undefined;
   }
   return sickLeave;
-}
+};
 
 export const toNewPatient = (object: any): NewPatient => {
   const newPatient: NewPatient = {

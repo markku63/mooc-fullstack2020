@@ -1,6 +1,6 @@
 import React from "react";
-import { ErrorMessage, Field, FieldProps, FormikProps } from "formik";
-import { Dropdown, DropdownProps, Form } from "semantic-ui-react";
+import { Field } from "formik";
+import { Form } from "semantic-ui-react";
 
 export type TypeOption = {
   value: "HealthCheck" | "OccupationalHealthcare" | "Hospital";
