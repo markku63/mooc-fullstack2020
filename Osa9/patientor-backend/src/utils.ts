@@ -15,7 +15,7 @@ const isDate = (date: string): boolean => {
 
 const isDateRange = (daterange: any): daterange is DateRange => {
   return (
-    daterange
+    !!daterange
     && typeof daterange === 'object'
     && 'startDate' in daterange
     && 'endDate' in daterange
