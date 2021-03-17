@@ -5,7 +5,7 @@ interface BmiValues {
 
 export const calculateBmi = (height: number, weight: number): string => {
   if (height <= 0 || weight <= 0) {
-    throw new Error('Impossible inpu values');
+    throw new Error('Impossible input values');
   }
   const bmi = weight / ((height/100)**2);
   if (bmi < 15) {
