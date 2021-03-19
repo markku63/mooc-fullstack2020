@@ -75,7 +75,7 @@ const OccupationalHealthcare: React.FC<{ entry: OccupationalHealthcareEntry }> =
       <em>{entry.description}</em>
       <List bulleted>
         {entry.diagnosisCodes?.map(diag => (
-          <List.Item>
+          <List.Item key={diag}>
             {diag} {Object.values(diagnoses).find(p => p.code === diag)?.name}
           </List.Item>
         ))}
@@ -174,7 +174,7 @@ const PatientDetailPage: React.FC = () => {
         entries
       </Header>
       {patient.entries?.map(entry => (
-        <EntryDetails entry={entry} />
+        <EntryDetails key={entry.id} entry={entry} />
       ))}
       <AddEntryModal
         modalOpen={modalOpen}
